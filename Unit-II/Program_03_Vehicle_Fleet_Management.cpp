@@ -1,90 +1,175 @@
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
-using namespace std;
+#include <iostream>   // Input/output
+#include <memory>     // Smart pointers
+#include <string>     // String data type
+#include <vector>     // Vector container
+using namespace std;  // Use standard namespace
 
-class Vehicle {
+
+// Base class for all vehicles
+class Vehicle
+{
 protected:
-string vehicleId;
-string registrationNumber;
-double fuelLevel;
+    string vehicleId;          // Vehicle ID
+    string registrationNumber; // Registration number
+    double fuelLevel;          // Fuel level
 
 public:
-Vehicle(string vid, string reg)
-: vehicleId(vid), registrationNumber(reg), fuelLevel(100.0) {}
-void startEngine() const {
-cout << "Vehicle " << vehicleId << " engine started." << endl;
-}
-void refuel(double amount) {
-fuelLevel += amount;
-if (fuelLevel > 100.0) {
-fuelLevel = 100.0;
-}
-}
+    // Constructor
+    Vehicle(string vid, string reg)
+        : vehicleId(vid), registrationNumber(reg), fuelLevel(100.0) {}
 
-virtual void displayInfo() const {
-cout << "Vehicle ID: " << vehicleId
-<< " | Registration: " << registrationNumber
-<< " | Fuel: " << fuelLevel << "%" << endl;
-}
+    // Start vehicle engine
+    void startEngine() const
+    {
+        cout << "Vehicle " << vehicleId
+             << " engine started." << endl;
+    }
 
-virtual ~Vehicle() = default;
+    // Add fuel to the vehicle
+    void refuel(double amount)
+    {
+        fuelLevel += amount;
+
+        // Limit fuel level to 100%
+        if (fuelLevel > 100.0)
+        {
+            fuelLevel = 100.0;
+        }
+    }
+
+    // Virtual function to display vehicle information
+    virtual void displayInfo() const
+    {
+        cout << "Vehicle ID: " << vehicleId
+             << " | Registration: " << registrationNumber
+             << " | Fuel: " << fuelLevel << "%" << endl;
+    }
+
+    // Virtual destructor
+    virtual ~Vehicle() = default;
 };
 
-class Truck : public Vehicle {
+
+// Truck inherits from Vehicle
+class Truck : public Vehicle
+{
 private:
-double cargoCapacity;
+    double cargoCapacity;   // Cargo capacity
 
 public:
-Truck(string vid, string reg, double capacity)
-: Vehicle(vid, reg), cargoCapacity(capacity) {}
-void displayInfo() const override {
-cout << "Truck | ";
-Vehicle::displayInfo();
-cout << "Cargo capacity: " << cargoCapacity << " tonnes" << endl;
-}
+    // Constructor
+    Truck(string vid, string reg, double capacity)
+        : Vehicle(vid, reg), cargoCapacity(capacity) {}
+
+    // Override vehicle information
+    void displayInfo() const override
+    {
+        cout << "Truck | ";
+
+        // Call base class displayInfo()
+        Vehicle::displayInfo();
+
+        cout << "Cargo capacity: "
+             << cargoCapacity << " tonnes" << endl;
+    }
 };
-class DeliveryVan : public Vehicle {
+
+
+// Delivery van inherits from Vehicle
+class DeliveryVan : public Vehicle
+{
 private:
-int packageCount;
+    int packageCount;   // Number of packages
 
 public:
-DeliveryVan(string vid, string reg, int packages)
-: Vehicle(vid, reg), packageCount(packages) {}
+    // Constructor
+    DeliveryVan(string vid, string reg, int packages)
+        : Vehicle(vid, reg), packageCount(packages) {}
 
-void displayInfo() const override {
-cout << "Delivery Van | ";
-Vehicle::displayInfo();
-cout << "Packages loaded: " << packageCount << endl;
-}
+    // Override vehicle information
+    void displayInfo() const override
+    {
+        cout << "Delivery Van | ";
+
+        // Call base class displayInfo()
+        Vehicle::displayInfo();
+
+        cout << "Packages loaded: "
+             << packageCount << endl;
+    }
 };
 
-class Bike : public Vehicle {
-    private:
-bool hasDeliveryBox;
+
+// Bike inherits from Vehicle
+class Bike : public Vehicle
+{
+private:
+    bool hasDeliveryBox;   // Delivery box availability
 
 public:
-Bike(string vid, string reg, bool hasBox)
-: Vehicle(vid, reg), hasDeliveryBox(hasBox) {}
+    // Constructor
+    Bike(string vid, string reg, bool hasBox)
+        : Vehicle(vid, reg), hasDeliveryBox(hasBox) {}
 
-void displayInfo() const override {
-cout << "Delivery Bike | ";
-Vehicle::displayInfo();
-cout << "Delivery box: " << (hasDeliveryBox ? "Available" : "Not available") << endl;
-}
+    // Override vehicle information
+    void displayInfo() const override
+    {
+        cout << "Delivery Bike | ";
+
+        // Call base class displayInfo()
+        Vehicle::displayInfo();
+
+        // Conditional operator checks delivery box availability
+        cout << "Delivery box: "
+             << (hasDeliveryBox ? "Available" : "Not available")
+             << endl;
+    }
 };
 
-int main() {
-vector<unique_ptr<Vehicle>> fleet;
-fleet.push_back(make_unique<Truck>("V001", "MH12-AB-1234", 10.5));
-fleet.push_back(make_unique<DeliveryVan>("V002", "MH12-CD-5678", 50));
-fleet.push_back(make_unique<Bike>("V003", "MH12-EF-9012", true));
 
-cout << "=== Fleet Status ===" << endl;
-for (const auto& vehicle : fleet) {
-vehicle->startEngine();
-vehicle->displayInfo();
-cout << endl;
-}
+int main()
+{
+    // Vector of smart pointers to Vehicle objects
+    vector<unique_ptr<Vehicle>> fleet;
+
+    // Add truck to fleet
+    fleet.push_back(
+        make_unique<Truck>(
+            "V001", "MH12-AB-1234", 10.5
+        )
+    );
+
+    // Add delivery van to fleet
+    fleet.push_back(
+        make_unique<DeliveryVan>(
+            "V002", "MH12-CD-5678", 50
+        )
+    );
+
+    // Add delivery bike to fleet
+    fleet.push_back(
+        make_unique<Bike>(
+            "V003", "MH12-EF-9012", true
+        )
+    );
+
+
+    // Display fleet heading
+    cout << "=== Fleet Status ===" << endl;
+
+
+    // Process every vehicle in the fleet
+    for (const auto& vehicle : fleet)
+    {
+        // Start the vehicle engine
+        vehicle->startEngine();
+
+        // Display vehicle-specific information
+        vehicle->displayInfo();
+
+        // Print a blank line
+        cout << endl;
+    }
+
+    return 0;   // Successful execution
 }
